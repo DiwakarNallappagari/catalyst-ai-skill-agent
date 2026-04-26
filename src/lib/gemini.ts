@@ -1,7 +1,8 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY || "",
+});
 
 export interface AssessmentResult {
   matchAnalysis: {
@@ -197,9 +198,21 @@ Candidate Answer: ${answer || "N/A"}
 ---
 `;
   try {
-    const result = await model.generateContent(fullPrompt);
-    const response = await result.response;
-    const text = response.text();
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful AI designed to output JSON only."
+        },
+        {
+          role: "user",
+          content: fullPrompt,
+        },
+      ],
+      model: "llama-3.3-70b-versatile",
+      response_format: { type: "json_object" },
+    });
+    const text = completion.choices[0]?.message?.content || "{}";
     
     // Remove markdown code blocks if present
     const cleanJson = text.replace(/```json/g, "").replace(/```/g, "").trim();
