@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-import { pathToFileURL } from "url";
 
 export const runtime = 'nodejs';
 
@@ -14,15 +12,13 @@ export async function POST(req: NextRequest) {
     }
 
     const buffer = new Uint8Array(await file.arrayBuffer());
-    console.log("Buffer created, calling pdfjs-dist (size:", buffer.length, ")");
 
-    // Use the legacy build which is more compatible with Node.js
+    // Use standard build
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
     
-    // Use the worker file we just copied to public, converted to a file:// URL for Windows compatibility
-    const workerPath = path.join(process.cwd(), "public", "pdf.worker.mjs");
-    const workerURL = pathToFileURL(workerPath).href;
-    (pdfjs as any).GlobalWorkerOptions.workerSrc = workerURL;
+    // Disable worker. By setting this to empty, it forces pdfjs to run the worker code on the main thread.
+    // This is much safer for Vercel Serverless Functions.
+    (pdfjs as any).GlobalWorkerOptions.workerSrc = "";
     
     const loadingTask = pdfjs.getDocument({
       data: buffer,

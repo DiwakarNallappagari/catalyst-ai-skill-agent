@@ -9,13 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@napi-rs/canvas": "^0.1.100",
-    "canvas": "^3.2.3",
     "framer-motion": "^12.38.0",
     "groq-sdk": "^1.1.2",
     "lucide-react": "^1.11.0",
     "next": "16.2.4",
-    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^5.6.205",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
