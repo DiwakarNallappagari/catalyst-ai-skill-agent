@@ -270,14 +270,33 @@ Candidate Answer: ${answer || "N/A"}
       },
       skillScores: [
         {
-          skill: skillName,
+          skill: `${skillName} Core`,
           score: 8.5,
           level: "Advanced",
           confidence: "High",
           evidence: [
             { detail: `Demonstrates deep proficiency in ${skillName} core concepts.`, status: true },
-            { detail: "Mentions practical implementation strategies.", status: true },
+            { detail: "Mentions practical implementation strategies.", status: true }
+          ]
+        },
+        {
+          skill: "System Architecture",
+          score: 6.5,
+          level: "Intermediate",
+          confidence: "Medium",
+          evidence: [
+            { detail: "Understands basic architectural patterns.", status: true },
             { detail: "Could elaborate more on distributed system edge cases.", status: false }
+          ]
+        },
+        {
+          skill: "Cloud Deployment",
+          score: 4.0,
+          level: "Beginner",
+          confidence: "Low",
+          evidence: [
+            { detail: "Lacks practical CI/CD pipeline experience.", status: false },
+            { detail: "Basic awareness of cloud providers.", status: true }
           ]
         }
       ],
@@ -310,6 +329,30 @@ Candidate Answer: ${answer || "N/A"}
           miniProject: { title: `${skillName} Optimization Engine`, description: `Build a tool to analyze and optimize ${skillName} performance.` },
           adjacentSkills: ["System Design", "Cloud Architecture"],
           timeEstimate: "3 hrs/day"
+        },
+        { 
+          week: 2, 
+          tasks: ["Study System Architecture patterns", "Design scalable microservices"], 
+          resources: ["Designing Data-Intensive Applications", "System Design Primer"],
+          miniProject: { title: "Distributed Task Queue", description: "Implement a message broker with worker nodes." },
+          adjacentSkills: ["Docker", "Kubernetes"],
+          timeEstimate: "2.5 hrs/day"
+        },
+        { 
+          week: 3, 
+          tasks: ["Master Cloud Deployments", "Build a CI/CD pipeline"], 
+          resources: ["AWS/GCP Documentation", "GitHub Actions Guide"],
+          miniProject: { title: "Automated Deployment Pipeline", description: "Deploy your backend with zero-downtime." },
+          adjacentSkills: ["Terraform", "Monitoring"],
+          timeEstimate: "2 hrs/day"
+        },
+        { 
+          week: 4, 
+          tasks: ["Focus on Security Best Practices", "Performance profiling"], 
+          resources: ["OWASP Top 10", "Web Performance Metrics"],
+          miniProject: { title: "Security Audit Tool", description: "Create a scanner that identifies vulnerabilities in code." },
+          adjacentSkills: ["Penetration Testing", "Cryptography"],
+          timeEstimate: "1.5 hrs/day"
         }
       ]
     };
