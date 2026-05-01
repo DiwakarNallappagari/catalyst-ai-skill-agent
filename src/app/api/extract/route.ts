@@ -5,15 +5,27 @@ export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
-    const file = formData.get("file") as File;
+    let buffer: Buffer;
 
-    if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    const contentType = req.headers.get("content-type") || "";
+    
+    if (contentType.includes("application/json")) {
+      const body = await req.json();
+      if (!body.file) {
+        return NextResponse.json({ error: "No file provided" }, { status: 400 });
+      }
+      buffer = Buffer.from(body.file, "base64");
+    } else {
+      const formData = await req.formData();
+      const file = formData.get("file") as File;
+
+      if (!file) {
+        return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      buffer = Buffer.from(arrayBuffer);
     }
-
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
 
     console.log("Buffer created, calling pdf2json (size:", buffer.length, ")");
 

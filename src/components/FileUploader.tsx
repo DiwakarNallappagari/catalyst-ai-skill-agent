@@ -9,6 +9,18 @@ interface FileUploaderProps {
   analysisStatus?: string;
 }
 
+const toBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(",")[1]);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 export const FileUploader: React.FC<FileUploaderProps> = ({ onAnalyze, isAnalyzing, analysisStatus }) => {
   const [resumeText, setResumeText] = useState("");
   const [jd, setJd] = useState("");
@@ -21,14 +33,16 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onAnalyze, isAnalyzi
       setFileName(file.name);
       
       if (file.type === "application/pdf") {
-        const formData = new FormData();
-        formData.append("file", file);
         setIsProcessing(true);
         
         try {
+          const base64File = await toBase64(file);
           const response = await fetch("/api/extract", {
             method: "POST",
-            body: formData,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ file: base64File }),
           });
           
           if (!response.ok) {
